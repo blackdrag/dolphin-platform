@@ -18,6 +18,8 @@ package com.canoo.dolphin;
 import com.canoo.dolphin.event.BeanAddedListener;
 import com.canoo.dolphin.event.BeanRemovedListener;
 import com.canoo.dolphin.event.Subscription;
+import com.canoo.dolphin.mapping.Property;
+import com.canoo.dolphin.qualifier.Qualifier;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -170,4 +172,7 @@ public interface BeanManager extends Serializable {
      */
     Subscription onRemoved(BeanRemovedListener<Object> listener);
 
+    <T> void setQualifier(Property<T> property, Qualifier<T> qualifier);
+
+    <T> Qualifier<T> getQualifier(Property<T> property);
 }

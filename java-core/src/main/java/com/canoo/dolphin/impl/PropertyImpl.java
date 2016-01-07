@@ -97,4 +97,8 @@ public class PropertyImpl<T> implements Property<T> {
             listener.valueChanged(event);
         }
     }
+
+    public Attribute getAttribute() {
+        return attribute;
+    }
 }

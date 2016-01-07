@@ -21,6 +21,10 @@ import com.canoo.dolphin.event.BeanRemovedListener;
 import com.canoo.dolphin.event.Subscription;
 import com.canoo.dolphin.internal.BeanBuilder;
 import com.canoo.dolphin.internal.BeanRepository;
+import com.canoo.dolphin.mapping.Property;
+import com.canoo.dolphin.qualifier.Qualifier;
+import org.opendolphin.core.Attribute;
+import org.opendolphin.core.BaseAttribute;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -29,6 +33,7 @@ import java.util.List;
 public class BeanManagerImpl implements Serializable, BeanManager {
 
     protected final BeanRepository beanRepository;
+
     private final BeanBuilder beanBuilder;
 
     public BeanManagerImpl(BeanRepository beanRepository, BeanBuilder beanBuilder) {
@@ -95,6 +100,35 @@ public class BeanManagerImpl implements Serializable, BeanManager {
     @Override
     public Subscription onRemoved(BeanRemovedListener<Object> listener) {
         return beanRepository.addOnRemovedListener(listener);
+    }
+
+    @Override
+    public <T> void setQualifier(Property<T> property, Qualifier<T> qualifier)  {
+        if(property == null) {
+            throw new IllegalArgumentException("property must not be null!");
+        }
+        if(qualifier == null) {
+            throw new IllegalArgumentException("qualifier must not be null!");
+        }
+        if(!(property instanceof PropertyImpl)) {
+            throw new IllegalArgumentException("Dolphin Platform Internal Error: Property implementation not supported for qualifier!");
+        }
+        Attribute attribute = ((PropertyImpl)property).getAttribute();
+        if(!(attribute instanceof BaseAttribute)) {
+            throw new IllegalArgumentException("Dolphin Platform Internal Error: Attribute implementation not supported for qualifier!");
+        }
+        ((BaseAttribute)attribute).setQualifier(qualifier.getName());
+    }
+
+    @Override
+    public <T> Qualifier<T> getQualifier(Property<T> property) {
+        if(property == null) {
+            throw new IllegalArgumentException("property must not be null!");
+        }
+        if(!(property instanceof PropertyImpl)) {
+            throw new IllegalArgumentException("Dolphin Platform Internal Error: Property implementation not supported for qualifier!");
+        }
+        return new Qualifier<T>(((PropertyImpl)property).getAttribute().getQualifier());
     }
 
 }
